@@ -1,6 +1,7 @@
-package com.assignment.spoon.presentation;
+package com.assignment.spoon.user;
 
 import com.assignment.spoon.common.ApiTest;
+import com.assignment.spoon.common.Scenario;
 import com.assignment.spoon.domain.user.User;
 import com.assignment.spoon.infrastructure.user.UserRepository;
 import com.assignment.spoon.presentation.user.UserRequest;
@@ -24,8 +25,20 @@ class UserApiTest extends ApiTest {
     @Test
     @DisplayName("회원을 등록한다.")
     void signUpUserTest() {
+        String email = "test@test.com";
+
+        Scenario.registerUser().email(email).request();
+
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("저장실패"));
+
+        assertThat(user.getEmail()).isEqualTo(email);
+    }
+
+    @Test
+    @DisplayName("회원을 등록 요청시 이메일 형식이 맞지 않으면 오류가 발생한다.")
+    void signUpUserFailTest() {
         UserRequest.SignUp request = UserRequest.SignUp.builder()
-                .email("test@test.com")
+                .email("testaszxczxcccczsc")
                 .password("password")
                 .build();
 
@@ -37,10 +50,6 @@ class UserApiTest extends ApiTest {
                 .then()
                 .log().all().extract();
 
-        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new IllegalArgumentException("저장실패"));
-
-        assertThat(result.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-        assertThat(user.getEmail()).isEqualTo(request.getEmail());
-        assertThat(user.getPassword()).isNotEqualTo(request.getPassword());
+        assertThat(result.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
