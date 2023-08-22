@@ -1,2 +1,6 @@
-# sp-assignment
-sp-assignment
+# 스푼라디오 과제 전형
+
+---
+
+## 요구 사항 정리
+
