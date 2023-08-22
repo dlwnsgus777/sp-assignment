@@ -24,13 +24,26 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
+	// Spring Data JPA + H2 database
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	runtimeOnly 'com.h2database:h2'
 
+	/**
+	 * Lombok 추가
+	 * Getter, Setter 등 중복 코드를 제거하기 위해 추가
+	 */
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	
+	/**
+	 * 인수 테스트를 위해 추가
+	 */
+	testImplementation 'io.rest-assured:rest-assured'
+
+	// Guava
+	implementation 'com.google.guava:guava:31.1-jre'
 }
 
 tasks.named('test') {
