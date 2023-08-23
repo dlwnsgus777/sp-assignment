@@ -21,4 +21,10 @@ public class UserReaderImpl implements UserReader {
             throw new IllegalArgumentException("이미 등록된 이메일입니다.");
         }
     }
+
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+    }
 }
