@@ -18,8 +18,9 @@ import javax.validation.Valid;
 public class UserController {
     private final UserService userService;
 
+
     @PostMapping("/sign-up")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.CREATED)
     public void signUp(@RequestBody @Valid UserRequest.SignUp request) {
         UserCommand.SignUp userCommand = UserCommand.SignUp.builder()
                 .email(request.getEmail())
