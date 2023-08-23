@@ -20,7 +20,7 @@ public class UserController {
 
 
     @PostMapping("/sign-up")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.CREATED)
     public void signUp(@RequestBody @Valid UserRequest.SignUp request) {
         UserCommand.SignUp userCommand = UserCommand.SignUp.builder()
                 .email(request.getEmail())

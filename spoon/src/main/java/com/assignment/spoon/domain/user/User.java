@@ -18,7 +18,6 @@ import javax.persistence.Table;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class User extends BaseEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -35,6 +34,14 @@ public class User extends BaseEntity {
     public enum Status {
         DJ,
         LISTENER
+    }
+
+    public void changeStatus() {
+        if (status.equals(Status.DJ)) {
+            status = Status.LISTENER;
+            return;
+        }
+        status = Status.DJ;
     }
 
     @Builder
