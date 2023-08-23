@@ -18,6 +18,7 @@ import javax.validation.Valid;
 public class UserController {
     private final UserService userService;
 
+
     @PostMapping("/sign-up")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void signUp(@RequestBody @Valid UserRequest.SignUp request) {
