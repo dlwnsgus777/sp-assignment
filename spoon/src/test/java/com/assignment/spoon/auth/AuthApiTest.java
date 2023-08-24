@@ -58,4 +58,25 @@ public class AuthApiTest extends ApiTest {
 
       assertThat(result.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
    }
+
+   @Test
+   @DisplayName("비밀번호가 틀리면 로그인에 실패한다.")
+   void signInFailTestPasswordFail() {
+      Scenario.registerUser().request();
+
+      AuthRequest.SignIn request = AuthRequest.SignIn.builder()
+            .email(Scenario.registerUser().getEmail())
+            .password("failPassword")
+            .build();
+
+      ExtractableResponse<Response> result = RestAssured.given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(request)
+            .when()
+            .post("/api/sign-in")
+            .then()
+            .log().all().extract();
+
+      assertThat(result.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+   }
 }
