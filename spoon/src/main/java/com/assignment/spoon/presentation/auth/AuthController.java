@@ -13,7 +13,7 @@ public class AuthController {
 
    @PostMapping("/api/sign-in")
    public AuthResponse.SignIn signIn(@RequestBody AuthRequest.SignIn request) {
-
+      System.out.println("???");
       return authService.signIn(request.getEmail(), request.getPassword());
    }
 }

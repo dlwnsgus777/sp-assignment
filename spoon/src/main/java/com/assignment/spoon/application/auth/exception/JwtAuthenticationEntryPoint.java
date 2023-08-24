@@ -1,6 +1,6 @@
 package com.assignment.spoon.application.auth.exception;
 
-import com.assignment.spoon.common.utils.exceptions.CommonExceptionHandler;
+import com.assignment.spoon.common.exceptions.CommonExceptionHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;

@@ -6,10 +6,13 @@ import com.assignment.spoon.application.auth.filter.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 
 @Configuration
 @EnableWebSecurity
@@ -18,6 +21,11 @@ public class WebSecurityConfiguration {
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private static final String[] AUTH_WHITELIST = {
+            "/",
+            "/api/sign-in",
+            "/api/sign-up"
+    };
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
@@ -25,12 +33,14 @@ public class WebSecurityConfiguration {
                 .cors().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
+                .headers().addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN))
+                .frameOptions().deny()
+                .and()
                 .authorizeRequests()
-                .antMatchers(
-                        "/api/sign-in",
-                      "/api/sign-up"
-                ).permitAll()
-              .anyRequest().authenticated();
+                .antMatchers(AUTH_WHITELIST)
+                .permitAll()
+                .anyRequest().authenticated();
+
 
         http
               .exceptionHandling()
@@ -42,4 +52,12 @@ public class WebSecurityConfiguration {
 
         return http.build();
     }
+
+    @Bean
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration authenticationConfiguration
+    ) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
 }

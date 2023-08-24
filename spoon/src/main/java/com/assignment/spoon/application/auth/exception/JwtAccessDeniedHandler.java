@@ -14,6 +14,6 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
 
    @Override
    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException e) throws IOException, ServletException {
-      throw new RuntimeException("인증에 실패하였습니다.");
+      throw new AuthorizationException("인증에 실패하였습니다.");
    }
 }

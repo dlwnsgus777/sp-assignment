@@ -1,10 +1,13 @@
-package com.assignment.spoon.common.utils.exceptions;
+package com.assignment.spoon.common.exceptions;
 
+import com.assignment.spoon.application.auth.exception.AuthorizationException;
+import lombok.NoArgsConstructor;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -39,6 +42,13 @@ public class CommonExceptionHandler {
         );
     }
 
+    @ExceptionHandler({AuthorizationException.class, BadCredentialsException.class})
+    public ResponseEntity<ErrorResponse> handleAuthorizationException(RuntimeException e) {
+        log.error("UnAuthorized -- message : " + e.getMessage());
+        ErrorResponse error = new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), e.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception e) {
         log.error("Internal Server Error :: {}", e.getMessage());
@@ -51,6 +61,7 @@ public class CommonExceptionHandler {
     }
 
     @Getter
+    @NoArgsConstructor
     public static class ErrorResponse {
         private int code;
         private String message;
