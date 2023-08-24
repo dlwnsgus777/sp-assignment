@@ -25,7 +25,6 @@ public class FanApiTest extends ApiTest {
     @Autowired
     FanRepository fanRepository;
 
-
     @Test
     @DisplayName("DJ를 팔로우 할 수 있다.")
     @Transactional(readOnly = true)
@@ -51,5 +50,26 @@ public class FanApiTest extends ApiTest {
         assertThat(fans.size()).isNotEqualTo(0);
         assertThat(fans.get(0).getFollower().getEmail()).isEqualTo(listenerEmail);
         assertThat(result.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    @DisplayName("Listener는 팔로우 할 수 없다.")
+    @Transactional(readOnly = true)
+    void signUpUserFailTest() {
+        String listenerEmail = "listener@listener.com";
+        Scenario.registerUser().request();
+        String listenerToken = Scenario.registerUser().email(listenerEmail).request()
+              .signIn().email(listenerEmail).request().getToken();
+
+        ExtractableResponse<Response> result = RestAssured.given().log().all()
+              .contentType(MediaType.APPLICATION_JSON_VALUE)
+              .header("Authorization", "Bearer " + listenerToken)
+              .when()
+              .post("/api/users/1/follow")
+              .then()
+              .log().all().extract();
+
+
+        assertThat(result.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }

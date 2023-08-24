@@ -40,6 +40,10 @@ public class UserService {
         User djUser = userReader.findById(command.getDjUserId());
         User listener = userReader.findById(command.getListenerId());
 
+        if (djUser.getStatus().equals(User.Status.LISTENER)) {
+            throw new IllegalArgumentException("DJ만 팔로우 할 수 있습니다.");
+        }
+
         userStore.registerFan(command.toEntity(djUser, listener));
     }
 }
