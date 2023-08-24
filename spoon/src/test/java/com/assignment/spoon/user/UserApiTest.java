@@ -52,4 +52,26 @@ class UserApiTest extends ApiTest {
 
         assertThat(result.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
+
+    @Test
+    @DisplayName("이미 회원가입이 된 이메일이면 오류가 발생한다.")
+    void signUpUserFailExistEmail() {
+        String email = "test@test.com";
+        Scenario.registerUser().email(email).request();
+
+        UserRequest.SignUp request = UserRequest.SignUp.builder()
+              .email("email")
+              .password("password")
+              .build();
+
+        ExtractableResponse<Response> result = RestAssured.given().log().all()
+              .contentType(MediaType.APPLICATION_JSON_VALUE)
+              .body(request)
+              .when()
+              .post("/api/users/sign-up")
+              .then()
+              .log().all().extract();
+
+        assertThat(result.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
 }

@@ -16,7 +16,21 @@ public class UserService {
 
     @Transactional
     public void signUp(UserCommand.SignUp command) {
+        if (checkExistsEmail(command.getEmail())) {
+            userStore.registerUser(command);
+            return;
+        }
 
-        userStore.registerUser(command);
+         throw new IllegalArgumentException("이미 등록된 이메일입니다.");
+    }
+
+    public boolean checkExistsEmail(String email) {
+        try {
+            userReader.findByEmail(email);
+        } catch (IllegalArgumentException e) {
+            return true;
+        }
+
+        return false;
     }
 }

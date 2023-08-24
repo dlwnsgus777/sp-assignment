@@ -12,16 +12,6 @@ import java.util.Optional;
 public class UserReaderImpl implements UserReader {
     private final UserRepository userRepository;
 
-
-    @Override
-    public void existsEmail(String email) {
-        Optional<User> user = userRepository.findByEmail(email);
-
-        if (user.isPresent()) {
-            throw new IllegalArgumentException("이미 등록된 이메일입니다.");
-        }
-    }
-
     @Override
     public User findByEmail(String email) {
         return userRepository.findByEmail(email)
