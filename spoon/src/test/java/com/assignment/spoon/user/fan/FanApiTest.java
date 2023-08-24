@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -27,11 +28,13 @@ public class FanApiTest extends ApiTest {
 
     @Test
     @DisplayName("DJ를 팔로우 할 수 있다.")
+    @Transactional(readOnly = true)
     void signUpUserTest() {
+        String listenerEmail = "listener@listener.com";
         String djUserToken = Scenario.registerUser().request()
                 .signIn().request().getToken();
-        String listenerToken = Scenario.registerUser().email("listener@listener.com").request()
-                .signIn().request().getToken();
+        String listenerToken = Scenario.registerUser().email(listenerEmail).request()
+                .signIn().email(listenerEmail).request().getToken();
 
         Scenario.startLiveRoom().request(djUserToken);
 
@@ -46,6 +49,7 @@ public class FanApiTest extends ApiTest {
 
         List<Fan> fans = fanRepository.findByDjId(1L);
         assertThat(fans.size()).isNotEqualTo(0);
+        assertThat(fans.get(0).getFollower().getEmail()).isEqualTo(listenerEmail);
         assertThat(result.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }

@@ -29,6 +29,7 @@ public class UserRegisterApi {
     }
 
     public Scenario request() {
+        System.out.println("EMAIL || " + email);
         UserRequest.SignUp request = UserRequest.SignUp.builder()
                 .email(email)
                 .password(password)
