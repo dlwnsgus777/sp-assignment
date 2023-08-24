@@ -1,8 +1,10 @@
 package com.assignment.spoon.presentation.liveroom;
 
 import com.assignment.spoon.application.liveroom.LiveRoomService;
+import com.assignment.spoon.domain.auth.LoginUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,7 +15,7 @@ public class LiveRoomController {
 
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
-    public void startLive(@RequestBody LiveRoomRequest.StartLive request) {
-        liveRoomService.startLiveRoom(request.getUserId());
+    public void startLive(@AuthenticationPrincipal(expression = "loginUser") LoginUser loginUser) {
+        liveRoomService.startLiveRoom(loginUser.getId());
     }
 }

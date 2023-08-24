@@ -1,5 +1,6 @@
 package com.assignment.spoon.application.user;
 
+import com.assignment.spoon.domain.user.User;
 import com.assignment.spoon.domain.user.UserCommand;
 import com.assignment.spoon.domain.user.UserReader;
 import com.assignment.spoon.domain.user.UserStore;
@@ -32,5 +33,13 @@ public class UserService {
         }
 
         return false;
+    }
+
+    @Transactional
+    public void userFollow(UserCommand.UserFollow command) {
+        User djUser = userReader.findById(command.getDjUserId());
+        User listener = userReader.findById(command.getListenerId());
+
+        userStore.registerFan(command.toEntity(djUser, listener));
     }
 }

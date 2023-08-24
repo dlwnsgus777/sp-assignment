@@ -28,13 +28,9 @@ public class LiveRoomApiTest extends ApiTest {
         String token = Scenario.registerUser().request()
                 .signIn().request().getToken();
 
-
-        LiveRoomRequest.StartLive request = new LiveRoomRequest.StartLive(1L);
-
         ExtractableResponse<Response> result = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header("Authorization", "Bearer " + token)
-                .body(request)
                 .when()
                 .post("/api/live-rooms")
                 .then()

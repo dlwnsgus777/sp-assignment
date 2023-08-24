@@ -1,15 +1,13 @@
 package com.assignment.spoon.presentation.user;
 
 import com.assignment.spoon.application.user.UserService;
+import com.assignment.spoon.domain.auth.LoginUser;
 import com.assignment.spoon.domain.user.UserCommand;
+import com.assignment.spoon.domain.user.UserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -31,8 +29,17 @@ public class UserController {
         userService.signUp(userCommand);
     }
 
-    @GetMapping("/test")
-    public void test() {
-        System.out.println("TEST");
+    @PostMapping("/users/{userId}/follow")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void userFollow(
+            @PathVariable("userId") Long userId,
+            @AuthenticationPrincipal(expression = "loginUser") LoginUser loginUser) {
+
+        userService.userFollow(UserCommand.UserFollow
+                .builder()
+                .djUserId(userId)
+                .listenerId(loginUser.getId())
+                .build()
+        );
     }
 }
