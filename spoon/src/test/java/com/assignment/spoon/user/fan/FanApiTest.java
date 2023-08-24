@@ -72,4 +72,35 @@ public class FanApiTest extends ApiTest {
 
         assertThat(result.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
+
+    @Test
+    @DisplayName("이미 DJ의 팬이면 팬 등록 요청이 실패한다.")
+    @Transactional(readOnly = true)
+    void signUpUserDuplicateFailTest() {
+        String listenerEmail = "listener@listener.com";
+        String djUserToken = Scenario.registerUser().request()
+              .signIn().request().getToken();
+        String listenerToken = Scenario.registerUser().email(listenerEmail).request()
+              .signIn().email(listenerEmail).request().getToken();
+
+        Scenario.startLiveRoom().request(djUserToken);
+
+        RestAssured.given().log().all()
+              .contentType(MediaType.APPLICATION_JSON_VALUE)
+              .header("Authorization", "Bearer " + listenerToken)
+              .when()
+              .post("/api/users/1/follow")
+              .then()
+              .log().all().extract();
+
+        ExtractableResponse<Response> result = RestAssured.given().log().all()
+              .contentType(MediaType.APPLICATION_JSON_VALUE)
+              .header("Authorization", "Bearer " + listenerToken)
+              .when()
+              .post("/api/users/1/follow")
+              .then()
+              .log().all().extract();
+
+        assertThat(result.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
 }

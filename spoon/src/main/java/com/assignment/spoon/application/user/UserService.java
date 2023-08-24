@@ -4,7 +4,6 @@ import com.assignment.spoon.domain.user.User;
 import com.assignment.spoon.domain.user.UserCommand;
 import com.assignment.spoon.domain.user.UserReader;
 import com.assignment.spoon.domain.user.UserStore;
-import com.assignment.spoon.presentation.user.UserRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +24,7 @@ public class UserService {
          throw new IllegalArgumentException("이미 등록된 이메일입니다.");
     }
 
-    public boolean checkExistsEmail(String email) {
+    private boolean checkExistsEmail(String email) {
         try {
             userReader.findByEmail(email);
         } catch (IllegalArgumentException e) {
@@ -44,6 +43,20 @@ public class UserService {
             throw new IllegalArgumentException("DJ만 팔로우 할 수 있습니다.");
         }
 
+        if (!checkExistsFan(djUser.getId(), listener.getId())) {
+            throw new IllegalArgumentException("이미 DJ의 팬입니다.");
+        }
+
         userStore.registerFan(command.toEntity(djUser, listener));
+    }
+
+    private boolean checkExistsFan(Long djId, Long followId) {
+        try {
+            userReader.findFanByDjIdAndFollowerId(djId, followId);
+        } catch (IllegalArgumentException e) {
+            return true;
+        }
+
+        return false;
     }
 }
