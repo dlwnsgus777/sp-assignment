@@ -30,6 +30,15 @@ public class CommonExceptionHandler {
         );
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleBIllegalArgumentException(IllegalArgumentException e) {
+        log.error("IllegalArgumentException :: {}", e.getMessage());
+
+        return ResponseEntity.badRequest().body(
+              new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage())
+        );
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception e) {
         log.error("Internal Server Error :: {}", e.getMessage());
