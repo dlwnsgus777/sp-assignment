@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping(value = "/api/users")
+@RequestMapping(value = "/api")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;

@@ -46,7 +46,7 @@ class UserApiTest extends ApiTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
                 .when()
-                .post("/api/users/sign-up")
+                .post("/api/sign-up")
                 .then()
                 .log().all().extract();
 
@@ -68,7 +68,7 @@ class UserApiTest extends ApiTest {
               .contentType(MediaType.APPLICATION_JSON_VALUE)
               .body(request)
               .when()
-              .post("/api/users/sign-up")
+              .post("/api/sign-up")
               .then()
               .log().all().extract();
 

@@ -1,6 +1,7 @@
 package com.assignment.spoon.application.auth.filter;
 
 import com.assignment.spoon.application.auth.CustomUserDetailService;
+import com.assignment.spoon.domain.user.UserInfo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -33,6 +34,19 @@ public class JwtTokenProvider {
 
    public String createToken(Authentication authentication) {
       Claims claims = Jwts.claims().setSubject(authentication.getName());
+      Date now = new Date();
+      Date validity = new Date(now.getTime() + validityInMilliseconds);
+
+      return Jwts.builder()
+            .setClaims(claims)
+            .setIssuedAt(now)
+            .setExpiration(validity)
+            .signWith(SignatureAlgorithm.HS256, secretKey)
+            .compact();
+   }
+
+   public String createToken(UserInfo user) {
+      Claims claims = Jwts.claims().setSubject(user.getEmail());
       Date now = new Date();
       Date validity = new Date(now.getTime() + validityInMilliseconds);
 
