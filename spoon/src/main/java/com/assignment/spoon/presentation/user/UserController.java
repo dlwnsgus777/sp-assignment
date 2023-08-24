@@ -4,6 +4,7 @@ import com.assignment.spoon.application.user.UserService;
 import com.assignment.spoon.domain.user.UserCommand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,5 +29,10 @@ public class UserController {
                 .build();
 
         userService.signUp(userCommand);
+    }
+
+    @GetMapping("/test")
+    public void test() {
+        System.out.println("TEST");
     }
 }

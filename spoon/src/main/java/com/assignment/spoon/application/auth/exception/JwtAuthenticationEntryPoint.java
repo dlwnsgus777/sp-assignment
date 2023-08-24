@@ -2,6 +2,7 @@ package com.assignment.spoon.application.auth.exception;
 
 import com.assignment.spoon.common.utils.exceptions.CommonExceptionHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
@@ -43,7 +44,9 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
       }
 
       CommonExceptionHandler.ErrorResponse error = new CommonExceptionHandler.ErrorResponse((int) code, errorMessage);
-      String result = new ObjectMapper().registerModule(new JavaTimeModule()).writeValueAsString(error);
+      String result = new ObjectMapper().registerModule(new JavaTimeModule())
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            .writeValueAsString(error);
 
       response.getWriter().print(result);
    }
