@@ -1,5 +1,6 @@
 package com.assignment.spoon.domain.user;
 
+import com.assignment.spoon.domain.user.fan.Fan;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,27 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 
 public class UserCommand {
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class UserFollow {
+        private Long djUserId;
+        private Long listenerId;
+
+        @Builder
+        public UserFollow(Long djUserId, Long listenerId) {
+            this.djUserId = djUserId;
+            this.listenerId = listenerId;
+        }
+
+        public Fan toEntity(User djUser, User listener) {
+            return Fan.builder()
+                    .dj(djUser)
+                    .follower(listener)
+                    .build();
+        }
+    }
 
     @Getter
     @Setter

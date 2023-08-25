@@ -20,6 +20,14 @@ public class UserRegisterApi {
         return this;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
     public Scenario request() {
         UserRequest.SignUp request = UserRequest.SignUp.builder()
                 .email(email)
@@ -30,7 +38,7 @@ public class UserRegisterApi {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
                 .when()
-                .post("/api/users/sign-up")
+                .post("/api/sign-up")
                 .then()
                 .log().all().extract();
 

@@ -25,13 +25,12 @@ public class LiveRoomApiTest extends ApiTest {
     @Test
     @DisplayName("방송을 시작하면 User는 DJ가 된다.")
     void startLiveRoomTest() {
-        Scenario.registerUser().request();
-
-        LiveRoomRequest.StartLive request = new LiveRoomRequest.StartLive(1L);
+        String token = Scenario.registerUser().request()
+                .signIn().request().getToken();
 
         ExtractableResponse<Response> result = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(request)
+                .header("Authorization", "Bearer " + token)
                 .when()
                 .post("/api/live-rooms")
                 .then()
