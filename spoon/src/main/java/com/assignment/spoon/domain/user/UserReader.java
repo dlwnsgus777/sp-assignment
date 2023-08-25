@@ -1,12 +1,23 @@
 package com.assignment.spoon.domain.user;
 
+import com.assignment.spoon.domain.user.block.BlockHistory;
 import com.assignment.spoon.domain.user.fan.Fan;
+
+import java.util.Optional;
 
 public interface UserReader {
 
-    User findByEmail(String email);
+    User getUserByEmail(String email);
 
-    User findById(Long userId);
+    Optional<User> findUserByEmail(String email);
 
-    Fan findFanByDjIdAndFollowerId(Long djId, Long followerId);
+    User getUserById(Long userId);
+
+    Fan getFanByFollowerId(Long djId, Long followerId);
+
+    Optional<Fan> findFanByFollowerId(Long djId, Long followerId);
+
+    BlockHistory getBlockUser(Long requestUserId, Long blockUserId);
+
+    Optional<BlockHistory> findBlockUser(Long requestUserId, Long blockUserId);
 }

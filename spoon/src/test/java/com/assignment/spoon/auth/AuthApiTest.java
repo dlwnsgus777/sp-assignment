@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("인증 관련 API 테스트")
 public class AuthApiTest extends ApiTest {
 
    @Test

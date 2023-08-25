@@ -18,6 +18,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("방송 관련 API 테스트")
 public class LiveRoomApiTest extends ApiTest {
     @Autowired
     UserRepository userRepository;
