@@ -35,7 +35,7 @@ public class UserService {
     }
 
     @Transactional
-    public void userFollow(UserCommand.UserFollow command) {
+    public void followUser(UserCommand.FollowUser command) {
         User djUser = userReader.findById(command.getDjUserId());
         User listener = userReader.findById(command.getListenerId());
 
@@ -58,5 +58,9 @@ public class UserService {
         }
 
         return false;
+    }
+
+    public void blockUser(UserCommand.BlockUser command) {
+
     }
 }

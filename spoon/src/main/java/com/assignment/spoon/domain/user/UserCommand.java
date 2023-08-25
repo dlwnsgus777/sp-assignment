@@ -15,12 +15,26 @@ public class UserCommand {
     @Getter
     @Setter
     @NoArgsConstructor
-    public static class UserFollow {
+    public static class BlockUser {
+        private Long requestUserId;
+        private Long blockUserId;
+
+        @Builder
+        public BlockUser(Long requestUserId, Long blockUserId) {
+            this.requestUserId = requestUserId;
+            this.blockUserId = blockUserId;
+        }
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class FollowUser {
         private Long djUserId;
         private Long listenerId;
 
         @Builder
-        public UserFollow(Long djUserId, Long listenerId) {
+        public FollowUser(Long djUserId, Long listenerId) {
             this.djUserId = djUserId;
             this.listenerId = listenerId;
         }
