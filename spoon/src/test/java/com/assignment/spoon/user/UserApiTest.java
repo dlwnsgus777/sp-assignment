@@ -3,8 +3,10 @@ package com.assignment.spoon.user;
 import com.assignment.spoon.common.ApiTest;
 import com.assignment.spoon.common.Scenario;
 import com.assignment.spoon.domain.user.User;
+import com.assignment.spoon.domain.user.block.BlockHistory;
 import com.assignment.spoon.infrastructure.user.UserRepository;
 import com.assignment.spoon.presentation.user.UserRequest;
+import com.assignment.spoon.presentation.user.UserResponse;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -72,6 +74,85 @@ class UserApiTest extends ApiTest {
               .post("/api/sign-up")
               .then()
               .log().all().extract();
+
+        assertThat(result.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    @DisplayName("Listener가 DJ의 프로필을 조회하여 DJ의 Fan Count를 확인할 수 있다.")
+    void retrieveUserTest() {
+        String listenerEmail = "listener@listener.com";
+        String djUserToken = Scenario.registerUser().request()
+                .signIn().request().getToken();
+        String listenerToken = Scenario.registerUser().email(listenerEmail).request()
+                .signIn().email(listenerEmail).request().getToken();
+        Scenario.startLiveRoom().request(djUserToken)
+                .userFollow().request(listenerToken, 1L);
+
+        ExtractableResponse<Response> result = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .header("Authorization", "Bearer " + listenerToken)
+                .when()
+                .get("/api/users/1")
+                .then()
+                .log().all().extract();
+
+        UserResponse.RetrieveUser retrieveUser = result.body().as(UserResponse.RetrieveUser.class);
+
+        assertThat(result.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(retrieveUser.getUser().getFanCount()).isEqualTo(1L);
+    }
+
+    @Test
+    @DisplayName("DJ가 본인의 프로필을 조회하면 Fan Count와 Fan List(User List)를 확인할 수 있다.")
+    void retrieveUserFanListTest() {
+        String listenerEmail = "listener@listener.com";
+        String djUserToken = Scenario.registerUser().request()
+                .signIn().request().getToken();
+        String listenerToken = Scenario.registerUser().email(listenerEmail).request()
+                .signIn().email(listenerEmail).request().getToken();
+        Scenario.startLiveRoom().request(djUserToken)
+                .userFollow().request(listenerToken, 1L);
+
+        ExtractableResponse<Response> result = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .header("Authorization", "Bearer " + djUserToken)
+                .when()
+                .get("/api/users/1")
+                .then()
+                .log().all().extract();
+
+        UserResponse.RetrieveUser retrieveUser = result.body().as(UserResponse.RetrieveUser.class);
+
+        assertThat(result.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(retrieveUser.getUser().getFanCount()).isEqualTo(1L);
+        assertThat(retrieveUser.getUser().getFanList())
+                .extracting("email")
+                .containsExactlyInAnyOrder(listenerEmail);
+    }
+
+    @Test
+    @DisplayName("차단된 관계에서는 유저 조회를 할 수 없다.")
+    void retrieveUserFailTest() {
+        String listenerEmail = "listener@listener.com";
+        String djUserToken = Scenario.registerUser().request()
+                .signIn().request().getToken();
+        String listenerToken = Scenario.registerUser().email(listenerEmail).request()
+                .signIn().email(listenerEmail).request().getToken();
+        Scenario.startLiveRoom().request(djUserToken)
+                .userFollow().request(listenerToken, 1L)
+                .userBlock().request(djUserToken, 2L);
+
+        ExtractableResponse<Response> result = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .header("Authorization", "Bearer " + listenerToken)
+                .when()
+                .get("/api/users/1")
+                .then()
+                .log().all().extract();
 
         assertThat(result.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }

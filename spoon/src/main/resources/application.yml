@@ -1,5 +1,5 @@
 server:
-  port: 8088
+  port: 8080
 
 spring:
   datasource:
@@ -26,3 +26,14 @@ security:
     token:
       secret-key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6ImpvYmlzLWFuZC12aWxsYWlucyIsImlhdCI6MTUxNjIzOTAyMn0.kNjVpsVSbH0kpjwHo8VY9la6P8cZ74PH4StTpkePogg
       expire-length: 3600000
+
+springdoc:
+  name: 스푼라디오 과제 전형 api
+  version: '1.0.0'
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  swagger-ui:
+    operations-sorter: alpha
+    tags-sorter: alpha
+    path: /docs/swagger
+  writer-with-default-pretty-printer: true

@@ -1,21 +1,20 @@
 package com.assignment.spoon.user.api;
 
 import com.assignment.spoon.common.Scenario;
-import com.assignment.spoon.domain.user.User;
 import com.assignment.spoon.presentation.user.UserRequest;
 import io.restassured.RestAssured;
 import org.springframework.http.MediaType;
 
-public class UserRegisterApi {
+public class RegisterUserApi {
     private String email = "test@test.com";
     private String password = "password";
 
-    public UserRegisterApi email(String email) {
+    public RegisterUserApi email(String email) {
         this.email = email;
         return this;
     }
 
-    public UserRegisterApi password(String password) {
+    public RegisterUserApi password(String password) {
         this.password = password;
         return this;
     }

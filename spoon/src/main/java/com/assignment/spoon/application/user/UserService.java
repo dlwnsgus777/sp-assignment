@@ -1,11 +1,10 @@
 package com.assignment.spoon.application.user;
 
-import com.assignment.spoon.domain.user.User;
-import com.assignment.spoon.domain.user.UserCommand;
-import com.assignment.spoon.domain.user.UserReader;
-import com.assignment.spoon.domain.user.UserStore;
+import com.assignment.spoon.domain.auth.LoginUser;
+import com.assignment.spoon.domain.user.*;
 import com.assignment.spoon.domain.user.block.BlockHistory;
 import com.assignment.spoon.domain.user.fan.Fan;
+import com.assignment.spoon.presentation.user.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,5 +75,26 @@ public class UserService {
     private boolean checkExistsBlock(Long requestUserId, Long blockUserId) {
         Optional<BlockHistory> blockUser = userReader.findBlockUser(requestUserId, blockUserId);
         return blockUser.isEmpty();
+    }
+
+    public UserResponse.RetrieveUser retrieveUser(Long userId, LoginUser loginUser) {
+        checkBlockedRelationship(userId, loginUser.getId());
+        UserDto.Main userResult = userReader.getUser(userId);
+        if (loginUser.getStatus().equals(User.Status.DJ) &&
+            userId.equals(loginUser.getId())) {
+            userResult.setFanList(userReader.getFans(userId));
+        }
+
+        return UserResponse.RetrieveUser.builder()
+                .user(userResult)
+                .build();
+    }
+
+    private void checkBlockedRelationship(Long requestUser, Long targetUser) {
+        if (!checkExistsBlock(requestUser, targetUser) ||
+                !checkExistsBlock(targetUser, requestUser)
+        ) {
+            throw new IllegalArgumentException("차단된 관계에서는 프로필 조회를 할 수 없습니다.");
+        }
     }
 }
