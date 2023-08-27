@@ -27,6 +27,9 @@ $ java -jar build/libs/spoon-0.0.1-SNAPSHOT.jar
 - Spring Data JPA
 - H2 Database
 - Swagger
+- rest-assured
+- jwt
+- guava
 
 
 ### 패키지 구조
