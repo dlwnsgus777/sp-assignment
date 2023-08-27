@@ -4,6 +4,7 @@ import com.assignment.spoon.auth.api.SignInApi;
 import com.assignment.spoon.liveroom.api.StartLiveRoomApi;
 import com.assignment.spoon.user.api.FollowApi;
 import com.assignment.spoon.user.api.RegisterUserApi;
+import com.assignment.spoon.user.api.BlockApi;
 
 public class Scenario {
     public static RegisterUserApi registerUser() {
@@ -20,5 +21,9 @@ public class Scenario {
 
     public static FollowApi userFollow() {
         return new FollowApi();
+    }
+
+    public static BlockApi userBlock() {
+        return new BlockApi();
     }
 }

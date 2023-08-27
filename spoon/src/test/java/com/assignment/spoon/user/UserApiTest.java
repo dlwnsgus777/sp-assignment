@@ -101,6 +101,6 @@ class UserApiTest extends ApiTest {
         UserResponse.RetrieveUser retrieveUser = result.body().as(UserResponse.RetrieveUser.class);
 
         assertThat(result.statusCode()).isEqualTo(HttpStatus.OK.value());
-
+        assertThat(retrieveUser.getUser().getFanCount()).isEqualTo(1L);
     }
 }
