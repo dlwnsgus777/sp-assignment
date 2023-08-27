@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -24,7 +25,11 @@ public class WebSecurityConfiguration {
     private static final String[] AUTH_WHITELIST = {
             "/",
             "/api/sign-in",
-            "/api/sign-up"
+            "/api/sign-up",
+            "/docs/swagger-ui/**",
+            "/docs/swagger-resources/**",
+            "/docs/swagger/**",
+            "/v3/api-docs/**"
     };
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

@@ -23,7 +23,6 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 
 	// Spring Data JPA + H2 database
@@ -42,6 +41,12 @@ dependencies {
 
 	// @Valid 관련 검증 사용을 위해 추가
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	/**
+	 * swagger
+	 */
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.12'
+
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
