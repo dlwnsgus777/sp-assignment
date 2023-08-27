@@ -105,6 +105,35 @@ class UserApiTest extends ApiTest {
     }
 
     @Test
+    @DisplayName("DJ가 본인의 프로필을 조회하면 Fan Count와 Fan List(User List)를 확인할 수 있다.")
+    void retrieveUserFanListTest() {
+        String listenerEmail = "listener@listener.com";
+        String djUserToken = Scenario.registerUser().request()
+                .signIn().request().getToken();
+        String listenerToken = Scenario.registerUser().email(listenerEmail).request()
+                .signIn().email(listenerEmail).request().getToken();
+        Scenario.startLiveRoom().request(djUserToken)
+                .userFollow().request(listenerToken, 1L);
+
+        ExtractableResponse<Response> result = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .header("Authorization", "Bearer " + djUserToken)
+                .when()
+                .get("/api/users/1")
+                .then()
+                .log().all().extract();
+
+        UserResponse.RetrieveUser retrieveUser = result.body().as(UserResponse.RetrieveUser.class);
+
+        assertThat(result.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(retrieveUser.getUser().getFanCount()).isEqualTo(1L);
+        assertThat(retrieveUser.getUser().getFanList())
+                .extracting("email")
+                .containsExactlyInAnyOrder(listenerEmail);
+    }
+
+    @Test
     @DisplayName("차단된 관계에서는 유저 조회를 할 수 없다.")
     void retrieveUserFailTest() {
         String listenerEmail = "listener@listener.com";

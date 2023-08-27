@@ -33,8 +33,15 @@ public class UserDto {
 
     @Getter
     @Setter
+    @NoArgsConstructor
     public static class Info {
         private Long id;
         private String email;
+
+        @Builder
+        public Info(Long id, String email) {
+            this.id = id;
+            this.email = email;
+        }
     }
 }

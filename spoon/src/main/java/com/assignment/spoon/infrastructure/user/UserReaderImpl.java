@@ -82,6 +82,19 @@ public class UserReaderImpl implements UserReader {
         return results.get(0);
     }
 
+    @Override
+    public List<UserDto.Info> getFans(Long userId) {
+        return jdbcTemplate.query(
+                "SELECT u.id, u.email " +
+                        "FROM users u " +
+                        "LEFT JOIN fans f ON u.id = f.follower_id " +
+                        "WHERE f.dj_id = ? " +
+                        "GROUP BY u.id",
+                fanListMapper,
+                userId
+        );
+    }
+
     static RowMapper<UserDto.Main> mapper = (rs, rowNum) ->
                     UserDto.Main.builder()
                             .id(rs.getLong("id"))
@@ -91,6 +104,11 @@ public class UserReaderImpl implements UserReader {
                             .fanCount(rs.getLong("fan_count"))
                             .build();
 
+    static RowMapper<UserDto.Info> fanListMapper = (rs, rowNum) ->
+            UserDto.Info.builder()
+                    .id(rs.getLong("id"))
+                    .email(rs.getString("email"))
+                    .build();
 
     private static LocalDateTime dateTimeOf(Timestamp timestamp) {
         return timestamp == null ? null : timestamp.toLocalDateTime();

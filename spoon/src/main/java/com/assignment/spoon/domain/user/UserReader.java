@@ -3,6 +3,7 @@ package com.assignment.spoon.domain.user;
 import com.assignment.spoon.domain.user.block.BlockHistory;
 import com.assignment.spoon.domain.user.fan.Fan;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserReader {
@@ -22,4 +23,6 @@ public interface UserReader {
     Optional<BlockHistory> findBlockUser(Long requestUserId, Long blockUserId);
 
     UserDto.Main getUser(Long userId);
+
+    List<UserDto.Info> getFans(Long userId);
 }

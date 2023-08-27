@@ -80,12 +80,10 @@ public class UserService {
     public UserResponse.RetrieveUser retrieveUser(Long userId, LoginUser loginUser) {
         checkBlockedRelationship(userId, loginUser.getId());
         UserDto.Main userResult = userReader.getUser(userId);
-        if (loginUser.getStatus().equals(User.Status.DJ)) {
-
-        } else {
-
+        if (loginUser.getStatus().equals(User.Status.DJ) &&
+            userId.equals(loginUser.getId())) {
+            userResult.setFanList(userReader.getFans(userId));
         }
-
 
         return UserResponse.RetrieveUser.builder()
                 .user(userResult)
