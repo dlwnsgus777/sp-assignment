@@ -4,9 +4,13 @@ import com.assignment.spoon.domain.user.User;
 import com.assignment.spoon.domain.user.UserCommand;
 import com.assignment.spoon.domain.user.UserReader;
 import com.assignment.spoon.domain.user.UserStore;
+import com.assignment.spoon.domain.user.block.BlockHistory;
+import com.assignment.spoon.domain.user.fan.Fan;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,19 +29,14 @@ public class UserService {
     }
 
     private boolean checkExistsEmail(String email) {
-        try {
-            userReader.findByEmail(email);
-        } catch (IllegalArgumentException e) {
-            return true;
-        }
-
-        return false;
+        Optional<User> findUser = userReader.findUserByEmail(email);
+        return findUser.isEmpty();
     }
 
     @Transactional
-    public void userFollow(UserCommand.UserFollow command) {
-        User djUser = userReader.findById(command.getDjUserId());
-        User listener = userReader.findById(command.getListenerId());
+    public void followUser(UserCommand.FollowUser command) {
+        User djUser = userReader.getUserById(command.getDjUserId());
+        User listener = userReader.getUserById(command.getListenerId());
 
         if (djUser.getStatus().equals(User.Status.LISTENER)) {
             throw new IllegalArgumentException("DJ만 팔로우 할 수 있습니다.");
@@ -50,13 +49,32 @@ public class UserService {
         userStore.registerFan(command.toEntity(djUser, listener));
     }
 
-    private boolean checkExistsFan(Long djId, Long followId) {
-        try {
-            userReader.findFanByDjIdAndFollowerId(djId, followId);
-        } catch (IllegalArgumentException e) {
-            return true;
+    private boolean checkExistsFan(Long djId, Long followerId) {
+        Optional<Fan> fan = userReader.findFanByFollowerId(djId, followerId);
+        return fan.isEmpty();
+    }
+
+    @Transactional
+    public void blockUser(UserCommand.BlockUser command) {
+        if (!checkExistsBlock(command.getRequestUserId(), command.getBlockUserId())) {
+            throw new IllegalArgumentException("이미 차단한 유저입니다.");
         }
 
-        return false;
+        User requestUser = userReader.getUserById(command.getRequestUserId());
+
+        if (requestUser.getStatus().equals(User.Status.DJ)) {
+            userReader.findFanByFollowerId(command.getRequestUserId(), command.getBlockUserId())
+                    .ifPresent(userStore::removeFan);
+        } else {
+            userReader.findFanByFollowerId(command.getBlockUserId(), command.getRequestUserId())
+                    .ifPresent(userStore::removeFan);
+        }
+
+        userStore.registerBlockUser(command.toEntity());
+    }
+
+    private boolean checkExistsBlock(Long requestUserId, Long blockUserId) {
+        Optional<BlockHistory> blockUser = userReader.findBlockUser(requestUserId, blockUserId);
+        return blockUser.isEmpty();
     }
 }

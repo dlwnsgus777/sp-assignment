@@ -10,17 +10,18 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.shadow.com.univocity.parsers.annotations.Nested;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("유저 관련 API 테스트")
 class UserApiTest extends ApiTest {
 
     @Autowired
     UserRepository userRepository;
-
 
     @Test
     @DisplayName("회원을 등록한다.")

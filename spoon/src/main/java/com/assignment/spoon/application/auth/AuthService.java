@@ -20,7 +20,7 @@ public class AuthService {
 
    @Transactional(readOnly = true)
    public AuthResponse.SignIn signIn(String email, String password) {
-      User user = userReader.findByEmail(email);
+      User user = userReader.getUserByEmail(email);
       if (!passwordEncoder.matches(password, user.getPassword())) {
          throw new IllegalArgumentException("로그인에 실패했습니다.");
       }

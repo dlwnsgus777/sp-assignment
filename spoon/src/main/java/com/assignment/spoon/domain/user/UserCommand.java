@@ -1,5 +1,6 @@
 package com.assignment.spoon.domain.user;
 
+import com.assignment.spoon.domain.user.block.BlockHistory;
 import com.assignment.spoon.domain.user.fan.Fan;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,12 +16,33 @@ public class UserCommand {
     @Getter
     @Setter
     @NoArgsConstructor
-    public static class UserFollow {
+    public static class BlockUser {
+        private Long requestUserId;
+        private Long blockUserId;
+
+        @Builder
+        public BlockUser(Long requestUserId, Long blockUserId) {
+            this.requestUserId = requestUserId;
+            this.blockUserId = blockUserId;
+        }
+
+        public BlockHistory toEntity() {
+            return BlockHistory.builder()
+                    .requestUserId(requestUserId)
+                    .blockUserId(blockUserId)
+                    .build();
+        }
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class FollowUser {
         private Long djUserId;
         private Long listenerId;
 
         @Builder
-        public UserFollow(Long djUserId, Long listenerId) {
+        public FollowUser(Long djUserId, Long listenerId) {
             this.djUserId = djUserId;
             this.listenerId = listenerId;
         }

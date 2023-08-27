@@ -3,7 +3,6 @@ package com.assignment.spoon.presentation.user;
 import com.assignment.spoon.application.user.UserService;
 import com.assignment.spoon.domain.auth.LoginUser;
 import com.assignment.spoon.domain.user.UserCommand;
-import com.assignment.spoon.domain.user.UserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -31,15 +30,29 @@ public class UserController {
 
     @PostMapping("/users/{userId}/follow")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void userFollow(
+    public void followUser(
             @PathVariable("userId") Long userId,
             @AuthenticationPrincipal(expression = "loginUser") LoginUser loginUser) {
 
-        userService.userFollow(UserCommand.UserFollow
+        userService.followUser(UserCommand.FollowUser
                 .builder()
                 .djUserId(userId)
                 .listenerId(loginUser.getId())
                 .build()
+        );
+    }
+
+    @PostMapping("/users/{userId}/block")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void blockUser(
+          @PathVariable("userId") Long userId,
+          @AuthenticationPrincipal(expression = "loginUser") LoginUser loginUser) {
+
+        userService.blockUser(UserCommand.BlockUser
+              .builder()
+              .blockUserId(userId)
+              .requestUserId(loginUser.getId())
+              .build()
         );
     }
 }

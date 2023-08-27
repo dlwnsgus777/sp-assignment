@@ -21,6 +21,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("팔로우 관련 API 테스트")
 public class FanApiTest extends ApiTest {
     @Autowired
     FanRepository fanRepository;
