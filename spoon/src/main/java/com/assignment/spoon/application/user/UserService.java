@@ -93,7 +93,7 @@ public class UserService {
     }
 
     private void checkBlockedRelationship(Long requestUser, Long targetUser) {
-        if (!checkExistsBlock(requestUser, targetUser) &&
+        if (!checkExistsBlock(requestUser, targetUser) ||
                 !checkExistsBlock(targetUser, requestUser)
         ) {
             throw new IllegalArgumentException("차단된 관계에서는 프로필 조회를 할 수 없습니다.");

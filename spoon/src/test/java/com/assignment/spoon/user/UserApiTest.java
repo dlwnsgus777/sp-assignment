@@ -79,7 +79,7 @@ class UserApiTest extends ApiTest {
     }
 
     @Test
-    @DisplayName(" Listener가 DJ의 프로필을 조회하여 DJ의 Fan Count를 확인할 수 있다.")
+    @DisplayName("Listener가 DJ의 프로필을 조회하여 DJ의 Fan Count를 확인할 수 있다.")
     void retrieveUserTest() {
         String listenerEmail = "listener@listener.com";
         String djUserToken = Scenario.registerUser().request()
@@ -102,5 +102,29 @@ class UserApiTest extends ApiTest {
 
         assertThat(result.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(retrieveUser.getUser().getFanCount()).isEqualTo(1L);
+    }
+
+    @Test
+    @DisplayName("차단된 관계에서는 유저 조회를 할 수 없다.")
+    void retrieveUserFailTest() {
+        String listenerEmail = "listener@listener.com";
+        String djUserToken = Scenario.registerUser().request()
+                .signIn().request().getToken();
+        String listenerToken = Scenario.registerUser().email(listenerEmail).request()
+                .signIn().email(listenerEmail).request().getToken();
+        Scenario.startLiveRoom().request(djUserToken)
+                .userFollow().request(listenerToken, 1L)
+                .userBlock().request(djUserToken, 2L);
+
+        ExtractableResponse<Response> result = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .header("Authorization", "Bearer " + listenerToken)
+                .when()
+                .get("/api/users/1")
+                .then()
+                .log().all().extract();
+
+        assertThat(result.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
