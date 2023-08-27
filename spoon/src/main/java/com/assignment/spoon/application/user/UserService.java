@@ -60,8 +60,15 @@ public class UserService {
             throw new IllegalArgumentException("이미 차단한 유저입니다.");
         }
 
-        userReader.findFanByFollowerId(command.getRequestUserId(), command.getBlockUserId())
-                .ifPresent(userStore::removeFan);
+        User requestUser = userReader.getUserById(command.getRequestUserId());
+
+        if (requestUser.getStatus().equals(User.Status.DJ)) {
+            userReader.findFanByFollowerId(command.getRequestUserId(), command.getBlockUserId())
+                    .ifPresent(userStore::removeFan);
+        } else {
+            userReader.findFanByFollowerId(command.getBlockUserId(), command.getRequestUserId())
+                    .ifPresent(userStore::removeFan);
+        }
 
         userStore.registerBlockUser(command.toEntity());
     }
