@@ -20,4 +20,6 @@ public interface UserReader {
     BlockHistory getBlockUser(Long requestUserId, Long blockUserId);
 
     Optional<BlockHistory> findBlockUser(Long requestUserId, Long blockUserId);
+
+    UserDto.Main getUser(Long userId);
 }

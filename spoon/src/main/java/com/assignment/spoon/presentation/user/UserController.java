@@ -28,6 +28,15 @@ public class UserController {
         userService.signUp(userCommand);
     }
 
+    @GetMapping("/users/{userId}")
+    public UserResponse.RetrieveUser retrieveUser(
+            @PathVariable("userId") Long userId,
+            @AuthenticationPrincipal(expression = "loginUser") LoginUser loginUser) {
+
+        return userService.retrieveUser(userId, loginUser);
+    }
+
+
     @PostMapping("/users/{userId}/follow")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void followUser(
